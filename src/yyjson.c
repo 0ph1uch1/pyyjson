@@ -6871,25 +6871,32 @@ static_inline PyObject *read_root_pretty(u8 *temp_buf,
         err->code = YYJSON_READ_ERROR_##_code; \
         err->msg = _msg; \
     } \
+    release_buf(); \
     return NULL; \
 } while (false)
 
 #define check_realloc() do { \
-    if(unlikely((val_ofs + 1) >= hdr_len)) {\
-        if (likely(hdr_len == stack_buf_size)) {\
-            val_hdr = (py_yyjson_val*) alc.malloc(alc.ctx, hdr_len*2*sizeof(py_yyjson_val));\
-            if(unlikely(val_hdr == NULL)) {\
-                goto fail_alloc;\
-            }\
-            memcpy(val_hdr, stack_buf, hdr_len*sizeof(py_yyjson_val));\
-        }\
-        else {\
-            val_hdr = alc.realloc(alc.ctx, val_hdr, hdr_len, 2 * hdr_len);\
-            if(unlikely(val_hdr == NULL)) {\
-                goto fail_alloc;\
-            }\
-        }\
-        hdr_len = 2 * hdr_len;\
+    if(unlikely((val_ofs + 1) >= hdr_len)) { \
+        if (likely(hdr_len == stack_buf_size)) { \
+            val_hdr = (py_yyjson_val*) alc.malloc(alc.ctx, hdr_len*2*sizeof(py_yyjson_val)); \
+            if(unlikely(val_hdr == NULL)) { \
+                goto fail_alloc; \
+            } \
+            memcpy(val_hdr, stack_buf, hdr_len*sizeof(py_yyjson_val)); \
+        } \
+        else { \
+            val_hdr = alc.realloc(alc.ctx, val_hdr, hdr_len, 2 * hdr_len); \
+            if(unlikely(val_hdr == NULL)) { \
+                goto fail_alloc; \
+            } \
+        } \
+        hdr_len = 2 * hdr_len; \
+    } \
+} while (false)
+
+#define release_buf() do { \
+    if (unlikely(hdr_len == stack_buf_size)) { \
+        alc.free(alc.ctx, val_hdr); \
     } \
 } while (false)
 
@@ -7329,8 +7336,7 @@ obj_end:
     // if (unlikely(ctn == ctn_parent)) goto doc_end;
     // ctn = ctn_parent;
     // ctn_len = (usize)(ctn->tag >> YYJSON_TAG_BIT);
-    if(val_ofs == 0)
-    {
+    if(val_ofs == 0) {
         goto doc_end;
     }
     if (*cur == '\n') cur++;
@@ -7366,6 +7372,7 @@ doc_end:
     // doc->val_read = (usize)((val - val_hdr)) - hdr_len + 1;
     // doc->str_pool = has_read_flag(INSITU) ? NULL : (char *)hdr;
     // return doc;
+    release_buf();
     return val_hdr->val;
     
 fail_string:
