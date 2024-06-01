@@ -3,12 +3,8 @@ import platform
 import subprocess
 import sys
 
-from setuptools import Extension, setup
-from setuptools.command.build_ext import build_ext
-
-
-with open("src/version_template.h", encoding='utf-8') as f:
-    version_template = f.read()
+from setuptools import Extension, setup  # type: ignore
+from setuptools.command.build_ext import build_ext  # type: ignore
 
 
 class CMakeExtension(Extension):
@@ -28,7 +24,6 @@ class cmake_build_ext(build_ext):
         for ext in self.extensions:
             ext_fullpath = self.get_ext_fullpath(ext.name)
             extdir = os.path.abspath(os.path.dirname(ext_fullpath))
-            # filename = os.path.basename(ext_fullpath)
             # cfg = 'Debug' if options['--debug'] == 'ON' else 'Release'
             cfg = 'Release'
             py_executable = sys.executable
@@ -38,26 +33,7 @@ class cmake_build_ext(build_ext):
                 f'-DCMAKE_INSTALL_PREFIX={extdir}',
                 f'-DPython_ROOT_DIR={os.path.dirname(os.path.dirname(os.path.dirname(os.__file__)))}',
                 f'-DPYTHON_EXECUTABLE={py_executable}',
-                # Ask CMake to place the resulting library in the directory
-                # containing the extension
-                # '-DCMAKE_LIBRARY_OUTPUT_DIRECTORY_{}={}'.format(cfg.upper(), extdir),  # strange
-                # Other intermediate static libraries are placed in a
-                # temporary build directory instead
-                # '-DCMAKE_ARCHIVE_OUTPUT_DIRECTORY_{}={}'.format(cfg.upper(), self.build_temp),  # strange
-                # Hint CMake to use the same Python executable that
-                # is launching the build, prevents possible mismatching if
-                # multiple versions of Python are installed
-                # '-DPYTHON_EXECUTABLE={}'.format(sys.executable),
-                # Add other project-specific CMake arguments if needed
-                # ...
             ]
-
-            # is_pypy = platform.python_implementation() == 'PyPy'
-            # if is_pypy:
-            #     cmake_args += [
-            #         '-DPYPY_VERSION=1'
-            #         '-DPython3_FIND_IMPLEMENTATIONS=PyPy'
-            #     ]
 
             # We can handle some platform-specific settings at our discretion
             if platform.system() == 'Windows':
@@ -96,15 +72,23 @@ class cmake_build_ext(build_ext):
                 os.rename(os.path.join(extdir, 'bin/pyyjson.dll'), ext_fullpath)
 
 
+with open("README.md", "r", encoding="utf-8") as readme:
+    long_description = readme.read()
+
 setup(
-    name='pyyjson',
-    use_scm_version={
-        "local_scheme": lambda x: "",
-        "write_to": "src/version.h",
-        "write_to_template": version_template,
+    name="pyyjson",
+    version="0.9.0",
+    url='https://github.com/0ph1uch1/pyyjson',
+    project_urls={
+        'Bug Tracker': 'https://github.com/0ph1uch1/pyyjson/issues',
+        'Source Code': 'https://github.com/0ph1uch1/pyyjson',
     },
+    description='yyjson for Python',
+    long_description=long_description,
+    long_description_content_type='text/markdown',
+    include_package_data=True,
     ext_modules=[
-        CMakeExtension(name='pyyjson')
+        CMakeExtension(name="pyyjson")
     ],
     cmdclass=dict(build_ext=cmake_build_ext)
 )
