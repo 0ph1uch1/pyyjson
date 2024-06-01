@@ -6309,17 +6309,21 @@ static_noinline PyObject *read_root_single(u8 *temp_buf,
                                              yyjson_read_err *err) {
     
 #define return_err(_pos, _code, _msg) do { \
-    if (is_truncated_end(start_ptr, _pos, end, YYJSON_READ_ERROR_##_code)) { \
-        err->pos = (usize)(end - start_ptr); \
-        err->code = YYJSON_READ_ERROR_UNEXPECTED_END; \
-        err->msg = "unexpected end of data"; \
-    } else { \
-        err->pos = (usize)(_pos - start_ptr); \
-        err->code = YYJSON_READ_ERROR_##_code; \
-        err->msg = _msg; \
+    if (!PyErr_Occurred()) { \
+        if (is_truncated_end(start_ptr, _pos, end, YYJSON_READ_ERROR_##_code)) { \
+            err->pos = (usize)(end - start_ptr); \
+            err->code = YYJSON_READ_ERROR_UNEXPECTED_END; \
+            err->msg = "unexpected end of data"; \
+        } else { \
+            err->pos = (usize)(_pos - start_ptr); \
+            err->code = YYJSON_READ_ERROR_##_code; \
+            err->msg = _msg; \
+        } \
+        PyErr_SetString(JSONDecodeError, err->msg); \
     } \
     return NULL; \
 } while (false)
+
     u8* const start_ptr = cur;
     // usize hdr_len; /* value count used by doc */
     // usize alc_num; /* value count capacity */

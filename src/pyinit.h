@@ -11,4 +11,6 @@
 #include <Python.h>
 #endif
 
+extern PyObject *JSONDecodeError;
+
 #endif // PYINIT_H
