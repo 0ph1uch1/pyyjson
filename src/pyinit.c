@@ -92,11 +92,11 @@ PyObject *pyyjson_Decode(PyObject *self, PyObject *args, PyObject *kwargs) {
         PyErr_SetString(JSONDecodeError, "Invalid argument");
         return NULL;
     }
-    // TODO
     yyjson_read_err err;
-    PyObject *root = yyjson_read_opts((char *) string,
-                                      len, NULL, &err);
-    if (err.code) {
+    PyObject *root = yyjson_read_opts((char *) string, len, NULL, &err);
+    if (yyjson_unlikely(PyErr_Occurred())) {
+        return NULL;
+    } else if (yyjson_unlikely(err.code)) {
         PyErr_Format(PyExc_ValueError, "%s\n\tat %zu", err.msg, err.pos);
         return NULL;
     }
