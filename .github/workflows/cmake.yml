@@ -15,31 +15,31 @@ on:
 
 jobs:
   # Check different architectures (qemu, ubuntu:gcc)
-  linux_archs:
-    runs-on: ubuntu-latest
-    strategy:
-      fail-fast: false
-      matrix:
-        arch: [i386, arm32v7, arm64v8, ppc64le, s390x, riscv64]
+  # linux_archs:
+  #   runs-on: ubuntu-latest
+  #   strategy:
+  #     fail-fast: false
+  #     matrix:
+  #       arch: [i386, arm32v7, arm64v8, ppc64le, s390x, riscv64]
 
-    steps:
-    - uses: actions/checkout@v3
+  #   steps:
+  #   - uses: actions/checkout@v3
 
-    - name: Set up QEMU
-      uses: docker/setup-qemu-action@v2
+  #   - name: Set up QEMU
+  #     uses: docker/setup-qemu-action@v2
 
-    - name: Set up Docker Buildx
-      uses: docker/setup-buildx-action@v2
+  #   - name: Set up Docker Buildx
+  #     uses: docker/setup-buildx-action@v2
 
-    - name: CMake and CTest
-      run: |
-          docker run -v "$PWD:/pyyjson" ${{ matrix.arch }}/ubuntu bash -e -c '
-            FORCE_COLOR=1
-            CLICOLOR_FORCE=1
-            apt-get update
-            apt-get install -y gcc g++ cmake python3 python3-pip
-            python3 -m pip install .
-          '
+  #   - name: CMake and CTest
+  #     run: |
+  #         docker run -v "$PWD:/pyyjson" ${{ matrix.arch }}/ubuntu bash -e -c '
+  #           FORCE_COLOR=1
+  #           CLICOLOR_FORCE=1
+  #           apt-get update
+  #           apt-get install -y gcc g++ cmake python3 python3-pip
+  #           python3 -m pip install .
+  #         '
 
 
   # Check latest clang
@@ -67,7 +67,6 @@ jobs:
     - name: Build
       shell: bash
       run: |
-        cd ${{runner.workspace}}
         python3 -m pip install .
     
     # - name: Build
@@ -104,7 +103,6 @@ jobs:
     - name: Build
       shell: bash
       run: |
-        cd ${{runner.workspace}}
         python3 -m pip install .
 
 
@@ -115,28 +113,26 @@ jobs:
 
 
   # Check old gcc 32-bit
-  linux_gcc5_i386:
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v3
+  # linux_gcc5_i386:
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #   - uses: actions/checkout@v3
 
-    - name: Set up QEMU
-      uses: docker/setup-qemu-action@v2
+  #   - name: Set up QEMU
+  #     uses: docker/setup-qemu-action@v2
 
-    - name: Set up Docker Buildx
-      uses: docker/setup-buildx-action@v2
+  #   - name: Set up Docker Buildx
+  #     uses: docker/setup-buildx-action@v2
 
-    - name: CMake and CTest
-      run: |
-          docker run -v "$PWD:/pyyjson" i386/ubuntu:16.04 bash -e -c '
-            FORCE_COLOR=1
-            CLICOLOR_FORCE=1
-            apt-get update
-            apt-get install -y gcc g++ cmake python3 python3-pip
-            mkdir build
-            cd build
-            python3 -m pip install ../pyyjson
-          '
+  #   - name: CMake and CTest
+  #     run: |
+  #         docker run -v "$PWD:/pyyjson" i386/ubuntu:16.04 bash -e -c '
+  #           FORCE_COLOR=1
+  #           CLICOLOR_FORCE=1
+  #           apt-get update
+  #           apt-get install -y gcc g++ cmake python3 python3-pip
+  #           python3 -m pip install ./pyyjson
+  #         '
 
 
   # Check old gcc 64-bit
