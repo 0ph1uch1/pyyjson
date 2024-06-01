@@ -6899,7 +6899,7 @@ static_inline PyObject *read_root_pretty(u8 *temp_buf,
 } while (false)
 
 #define release_buf() do { \
-    if (unlikely(hdr_len == stack_buf_size)) { \
+    if (unlikely(hdr_len != stack_buf_size)) { \
         alc.free(alc.ctx, val_hdr); \
     } \
 } while (false)

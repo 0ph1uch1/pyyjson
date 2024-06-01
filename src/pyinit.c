@@ -89,7 +89,7 @@ PyObject *pyyjson_Decode(PyObject *self, PyObject *args, PyObject *kwargs) {
     size_t len = 0;
     static const char *kwlist[] = {"s", NULL};
     if (!PyArg_ParseTupleAndKeywords(args, kwargs, "s#", (char **) kwlist, &string, &len)) {
-        PyErr_SetString(JSONDecodeError, "Invalid argument");
+        PyErr_SetString(PyExc_TypeError, "Invalid argument");
         return NULL;
     }
     yyjson_read_err err;
