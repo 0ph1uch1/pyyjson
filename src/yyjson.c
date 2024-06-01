@@ -7089,11 +7089,10 @@ arr_val_begin:
     }
     if (
         (*cur == 'i' || *cur == 'I' || *cur == 'N')) {
-        assert(0);
         // val_incr();
         // ctn_len++;
-        // if (read_inf_or_nan(false, &cur, pre, val)) goto arr_val_end;
-        // goto fail_character_val;
+        if (read_inf_or_nan(false, &cur, NULL, &val_temp)) goto arr_val_end;
+        goto fail_character_val;
     }
     // if (has_read_flag(ALLOW_COMMENTS)) {
     //     if (skip_spaces_and_comments(&cur)) goto arr_val_begin;
@@ -7295,11 +7294,10 @@ obj_val_begin:
         goto obj_val_begin;
     }
     if ( (*cur == 'i' || *cur == 'I' || *cur == 'N')) {
-        assert(0);
         // val++;
         // ctn_len++;
-        // if (read_inf_or_nan(false, &cur, pre, val)) goto obj_val_end;
-        // goto fail_character_val;
+        if (read_inf_or_nan(false, &cur, NULL, &val_temp)) goto obj_val_end;
+        goto fail_character_val;
     }
     // if (has_read_flag(ALLOW_COMMENTS)) {
     //     if (skip_spaces_and_comments(&cur)) goto obj_val_begin;
