@@ -4,7 +4,7 @@ import datetime
 
 import pyyjson
 
-from .util import read_fixture_bytes
+from util import read_fixture_bytes
 
 FIXTURE_ISSUE_335 = {
     "pfkrpavmb": "maxyjzmvacdwjfiifmzwbztjmnqdsjesykpf",
