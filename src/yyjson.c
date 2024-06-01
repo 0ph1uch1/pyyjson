@@ -6873,6 +6873,26 @@ static_inline PyObject *read_root_pretty(u8 *temp_buf,
     } \
     return NULL; \
 } while (false)
+
+#define check_realloc() do { \
+    if(unlikely((val_ofs + 1) >= hdr_len)) {\
+        if (likely(hdr_len == stack_buf_size)) {\
+            val_hdr = (py_yyjson_val*) alc.malloc(alc.ctx, hdr_len*2*sizeof(py_yyjson_val));\
+            if(unlikely(val_hdr == NULL)) {\
+                goto fail_alloc;\
+            }\
+            memcpy(val_hdr, stack_buf, hdr_len*sizeof(py_yyjson_val));\
+        }\
+        else {\
+            val_hdr = alc.realloc(alc.ctx, val_hdr, hdr_len, 2 * hdr_len);\
+            if(unlikely(val_hdr == NULL)) {\
+                goto fail_alloc;\
+            }\
+        }\
+        hdr_len = 2 * hdr_len;\
+    } \
+} while (false)
+
     u8 *const start_ptr = cur;
 // #define val_incr() do { \
 //     val++; \
@@ -6938,6 +6958,9 @@ static_inline PyObject *read_root_pretty(u8 *temp_buf,
     // raw_end = NULL;
     // pre = raw ? &raw_end : NULL;
 
+
+    
+
     if (*cur++ == '{') {
         // ctn->tag = YYJSON_TYPE_OBJ;
         // ctn->uni.ofs = 0;
@@ -6964,10 +6987,7 @@ arr_begin:
     /* push the new array value as current container */
     // ctn = val;
     // ctn_len = 0;
-    if((val_ofs + 1) * sizeof(py_yyjson_val) >= stack_buf_size)
-    {
-        val_hdr = alc.realloc(NULL, val_hdr, 1024, (end - cur) / 3 * sizeof(py_yyjson_val));
-    }
+    check_realloc();
     val_hdr[++val_ofs].val = PyList_New(0);
     val = val_hdr + val_ofs;
     if (*cur == '\n') cur++;
@@ -7133,10 +7153,7 @@ obj_begin:
     // val->uni.ofs = (usize)((u8 *)val - (u8 *)ctn);
     // ctn = val;
     // ctn_len = 0;
-    if((val_ofs + 1) * sizeof(py_yyjson_val) >= stack_buf_size)
-    {
-        val_hdr = alc.realloc(NULL, val_hdr, 1024, (end - cur) / 3 * sizeof(py_yyjson_val));
-    }
+    check_realloc();
     val = val_hdr + ++val_ofs;
     val->val = PyDict_New();
     if (*cur == '\n') cur++;
@@ -7391,8 +7408,9 @@ fail_comment:
 fail_garbage:
     return_err(cur, UNEXPECTED_CONTENT,
                "unexpected content after document");
-    
-#undef val_incr
+
+#undef check_realloc
+// #undef val_incr
 #undef return_err
 }
 
