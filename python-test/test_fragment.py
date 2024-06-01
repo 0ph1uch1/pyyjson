@@ -9,7 +9,7 @@ try:
 except ImportError:
     pandas = None  # type: ignore
 
-from .util import read_fixture_bytes
+from util import read_fixture_bytes
 
 
 class TestFragment:

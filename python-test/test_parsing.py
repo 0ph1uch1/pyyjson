@@ -4,7 +4,7 @@ import pytest
 
 import pyyjson
 
-from .util import read_fixture_bytes
+from util import read_fixture_bytes
 
 
 class TestJSONTestSuiteParsing:

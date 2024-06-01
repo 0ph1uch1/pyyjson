@@ -5,7 +5,7 @@ import json
 
 import pyyjson
 
-from .util import read_fixture_obj
+from util import read_fixture_obj
 
 
 class TestIndentedOutput:

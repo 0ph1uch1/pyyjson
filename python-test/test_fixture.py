@@ -4,7 +4,7 @@ import pytest
 
 import pyyjson
 
-from .util import read_fixture_bytes, read_fixture_str
+from util import read_fixture_bytes, read_fixture_str
 
 
 class TestFixture:
