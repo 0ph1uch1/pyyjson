@@ -14,6 +14,7 @@ pkgs.mkShell {
     pkgs.cmake
     pkgs.gdb
     pkgs.valgrind
+    pkgs.gcc
   ];
   shellHook = ''
     if [[ ! -d ${extra_search_directory} ]]; then mkdir ${extra_search_directory}; fi
@@ -35,6 +36,6 @@ pkgs.mkShell {
             rm -f "$file"
         fi
     done
-    ensure_symlink ${extra_search_directory}/python ${using_python}/bin/python
+    ensure_symlink ${extra_search_directory}/python ${pyenv}/bin/python
   '';
 }
