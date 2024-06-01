@@ -7103,6 +7103,7 @@ arr_val_begin:
 
 arr_val_end:
     PyList_Append(val->val, val_temp);
+    Py_DECREF(val_temp);
 arr_val_end_skip_char:
     if (byte_match_2(cur, ",\n")) {
         cur += 2;
@@ -7308,6 +7309,8 @@ obj_val_begin:
     
 obj_val_end:
     PyDict_SetItem(val->val, key_temp, val_temp);
+    Py_DECREF(key_temp);
+    Py_DECREF(val_temp);
 obj_val_end_skip_char:
     if (byte_match_2(cur, ",\n")) {
         cur += 2;
