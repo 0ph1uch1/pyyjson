@@ -41,8 +41,7 @@
 #include <limits.h>
 #include <string.h>
 #include <float.h>
-#include <pytypedefs.h>
-
+#include "pyinit.h"
 
 /*==============================================================================
  * Compile-time Options

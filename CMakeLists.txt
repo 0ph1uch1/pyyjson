@@ -149,7 +149,13 @@ if(WIN32)
 endif()
 # endif()
 
-
+# optimize for Release build
+if (CMAKE_BUILD_TYPE MATCHES ".*Rel.*")
+    message("Release mode, enabling maximal optimization")
+else(CMAKE_BUILD_TYPE MATCHES ".*Rel.*")
+    message("Debug mode, enabling debug symbols")
+    target_compile_options(pyyjson PUBLIC -g -O0)
+endif (CMAKE_BUILD_TYPE MATCHES ".*Rel.*")
 
 # ------------------------------------------------------------------------------
 # Install
