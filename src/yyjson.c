@@ -5863,10 +5863,10 @@ copy_utf8_inner_ucs1:
         })
 
         /* modified BEGIN */
-        // if (unlikely(pos == src)) {
-        //     if (!inv) return_err(src, "invalid UTF-8 encoding in string");
-        //     goto copy_ascii_stop_1;
-        // }
+        if (unlikely(pos == src)) {
+            return_err(src, "invalid UTF-8 encoding in string");
+            // goto copy_ascii_stop_1;
+        }
         goto copy_ascii_ucs1;
         /* modified END */
     }
@@ -6364,8 +6364,8 @@ static_noinline PyObject *read_root_single(u8 *temp_buf,
         goto fail_string;
     }
     if (*cur == 't') {
-        assert(false);
-        // if (likely(read_true(&cur, val))) goto doc_end;
+        // assert(false);
+        if (likely(read_true(&cur))) Py_RETURN_TRUE;
         goto fail_literal_true;
     }
     if (*cur == 'f') {
@@ -7508,7 +7508,7 @@ PyObject *yyjson_read_opts(char *dat,
     } else {
         /* RFC 8259: JSON text MUST be encoded using UTF-8 */
         if (err->pos == 0 && err->code != YYJSON_READ_ERROR_MEMORY_ALLOCATION) {
-            assert(false);
+            err->msg = "Invalid JSON text encoding";
             // if ((hdr[0] == 0xEF && hdr[1] == 0xBB && hdr[2] == 0xBF)) {
             //     err->msg = "byte order mark (BOM) is not supported";
             // } else if (len >= 4 &&
