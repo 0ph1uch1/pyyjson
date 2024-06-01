@@ -1,5 +1,7 @@
 .extra-stub-path/
 .vscode/
+/*.nix
+/.envrc
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
