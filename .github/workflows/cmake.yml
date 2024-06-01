@@ -38,9 +38,7 @@ jobs:
             CLICOLOR_FORCE=1
             apt-get update
             apt-get install -y gcc g++ cmake python3 python3-pip
-            mkdir build
-            cd build
-            python3 -m pip install ../pyyjson --prefix .
+            python3 -m pip install .
           '
 
 
@@ -66,17 +64,16 @@ jobs:
         echo "CC=$CLANG_PATH" >> $GITHUB_ENV
         echo "CXX=$CLANGPP_PATH" >> $GITHUB_ENV
 
-    - name: CMake
-      shell: bash
-      run: |
-        cmake -E make_directory ${{runner.workspace}}/build
-        cd ${{runner.workspace}}/build
-        cmake $GITHUB_WORKSPACE -DYYJSON_BUILD_TESTS=ON -DYYJSON_ENABLE_VALGRIND=ON
-    
     - name: Build
       shell: bash
-      working-directory: ${{runner.workspace}}/build
-      run: cmake --build . --config Release
+      run: |
+        cd ${{runner.workspace}}
+        python3 -m pip install .
+    
+    # - name: Build
+    #   shell: bash
+    #   working-directory: ${{runner.workspace}}/build
+    #   run: cmake --build . --config Release
     
     # - name: Test
     #   shell: bash
@@ -104,18 +101,13 @@ jobs:
         echo "CC=$GCC_VERSION" >> $GITHUB_ENV
         echo "CXX=$GPP_VERSION" >> $GITHUB_ENV
 
-    - name: CMake
-      shell: bash
-      run: |
-        cmake -E make_directory ${{runner.workspace}}/build
-        cd ${{runner.workspace}}/build
-        cmake $GITHUB_WORKSPACE
-    
     - name: Build
       shell: bash
-      working-directory: ${{runner.workspace}}/build
-      run: cmake --build . --config Release
-    
+      run: |
+        cd ${{runner.workspace}}
+        python3 -m pip install .
+
+
     # - name: Test
     #   shell: bash
     #   working-directory: ${{runner.workspace}}/build
@@ -143,8 +135,7 @@ jobs:
             apt-get install -y gcc g++ cmake python3 python3-pip
             mkdir build
             cd build
-            cmake ../pyyjson
-            cmake --build . --config Release
+            python3 -m pip install ../pyyjson
           '
 
 
@@ -217,10 +208,7 @@ jobs:
     - uses: actions/checkout@v3
     - name: Build and Test
       run: |
-        mkdir build
-        cd build
-        cmake .. -DCMAKE_BUILD_TYPE=Release
-        cmake --build . --config Release
+        pip install .
 
 
   # Check Windows MSVC
@@ -238,10 +226,7 @@ jobs:
     - uses: actions/checkout@v3
     - name: Build and Test
       run: |
-        mkdir build
-        cd build
-        cmake .. -DCMAKE_BUILD_TYPE=Release
-        cmake --build . --config Release
+        python -m pip install .
 
 
   # Fuzzing with LLVM libFuzzer for a short time
