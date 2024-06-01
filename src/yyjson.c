@@ -6882,14 +6882,14 @@ static_inline PyObject *read_root_pretty(u8 *temp_buf,
 #define check_realloc() do { \
     if(unlikely((val_ofs + 1) >= hdr_len)) { \
         if (likely(hdr_len == stack_buf_size)) { \
-            val_hdr = (py_yyjson_val*) alc.malloc(alc.ctx, hdr_len*2*sizeof(py_yyjson_val)); \
+            val_hdr = (py_yyjson_val*) alc.malloc(alc.ctx, 2 * hdr_len * sizeof(py_yyjson_val)); \
             if(unlikely(val_hdr == NULL)) { \
                 goto fail_alloc; \
             } \
-            memcpy(val_hdr, stack_buf, hdr_len*sizeof(py_yyjson_val)); \
+            memcpy(val_hdr, stack_buf, hdr_len * sizeof(py_yyjson_val)); \
         } \
         else { \
-            val_hdr = alc.realloc(alc.ctx, val_hdr, hdr_len, 2 * hdr_len); \
+            val_hdr = alc.realloc(alc.ctx, val_hdr, hdr_len * sizeof(py_yyjson_val), 2 * hdr_len * sizeof(py_yyjson_val)); \
             if(unlikely(val_hdr == NULL)) { \
                 goto fail_alloc; \
             } \
