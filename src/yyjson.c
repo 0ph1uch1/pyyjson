@@ -7377,8 +7377,9 @@ doc_end:
     // doc->val_read = (usize)((val - val_hdr)) - hdr_len + 1;
     // doc->str_pool = has_read_flag(INSITU) ? NULL : (char *)hdr;
     // return doc;
+    PyObject* ret = val_hdr->val;
     release_buf();
-    return val_hdr->val;
+    return ret;
     
 fail_string:
     return_err(cur, INVALID_STRING, msg);
