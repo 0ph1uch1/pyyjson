@@ -17,6 +17,23 @@
                 "isDefault": true
             },
             "detail": "调用nix-shell执行build.sh脚本"
+        },
+        {
+            "label": "pre-pytest",
+            "type": "shell",
+            "command": "${workspaceFolder}/.vscode/pre-pytest.sh",
+            "options": {
+                "shell": {
+                    "executable": "nix-shell",
+                    "args": ["--run"]
+                }
+            },
+            "problemMatcher": ["$gcc"], // 可以根据实际情况选择合适的问题匹配器
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "detail": "调用nix-shell执行build.sh脚本"
         }
     ]
 }

@@ -1,7 +1,11 @@
 let
   pkgs = import <nixpkgs> { };
   # define version
-  using_python = pkgs.python312;
+  using_python = (pkgs.enableDebugging pkgs.python312).overrideAttrs (
+    oldAttrs: {
+      keepDebugInfo = true;
+    }
+  );
   # import required python packages
   required_python_packages = import ./py_requirements.nix;
   #
@@ -14,6 +18,8 @@ pkgs.mkShell {
     pkgs.cmake
     pkgs.gdb
     pkgs.valgrind
+    # pkgs.gcc
+    pkgs.clang
     pkgs.gcc
   ];
   shellHook = ''
@@ -37,5 +43,11 @@ pkgs.mkShell {
         fi
     done
     ensure_symlink ${extra_search_directory}/python ${pyenv}/bin/python
+    ensure_symlink ${extra_search_directory}/valgrind ${pkgs.valgrind}/bin/valgrind
+    export CC=${pkgs.clang}/bin/clang
+    export CXX=${pkgs.clang}/bin/clang++
+    ensure_symlink ${extra_search_directory}/clang $CC
+    ensure_symlink ${extra_search_directory}/clang++ $CXX
+    export NIX_DEBUG_INFO_DIRS=/home/antares/Documents/GitHub/cpython-debug/Python-3.12.3/
   '';
 }

@@ -38,6 +38,42 @@
                 }
             ],
             "preLaunchTask": "CMake: build"
+        },
+        {
+            "name": "(gdb) 启动pytest",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/.extra-stub-path/python",
+            "args": [
+                "${workspaceFolder}/.extra-stub-path/pytest",
+                "-s",
+                "-rxX",
+                "../python-test"
+            ],
+            "stopAtEntry": false,
+            "cwd": "${workspaceFolder}/build",
+            "environment": [{
+                "name": "NIX_DEBUG_INFO_DIRS",
+                "value": "/home/antares/Documents/GitHub/cpython-debug/Python-3.12.3/"
+            },{
+                "name":"LD_PRELOAD",
+                "value":"/nix/store/xvzz97yk73hw03v5dhhz3j47ggwf1yq1-gcc-13.2.0-lib/lib/libasan.so"
+            }],
+            "externalConsole": false,
+            "MIMode": "gdb",
+            "setupCommands": [
+                {
+                    "description": "为 gdb 启用整齐打印",
+                    "text": "-enable-pretty-printing",
+                    "ignoreFailures": true
+                },
+                {
+                    "description": "将反汇编风格设置为 Intel",
+                    "text": "-gdb-set disassembly-flavor intel",
+                    "ignoreFailures": true
+                }
+            ],
+            "preLaunchTask": "pre-pytest"
         }
     ]
 }

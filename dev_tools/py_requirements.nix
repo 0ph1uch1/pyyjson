@@ -11,4 +11,5 @@ pypkgs: with pypkgs;
   pytest-random-order
   pytest-xdist
   pytz
+  objgraph
 ]
