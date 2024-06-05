@@ -126,7 +126,7 @@ PyObject *pyyjson_Decode(PyObject *self, PyObject *args, PyObject *kwargs)
                             len, YYJSON_READ_NOFLAG & ~YYJSON_READ_INSITU, NULL, &err);
     if(err.code)
     {
-        PyErr_Format(PyExc_ValueError, "%s\n\tat %zu", err.msg, err.pos);
+        PyErr_Format(JSONDecodeError, "%s\n\tat %zu", err.msg, err.pos);
         return NULL;
     }
     assert(root);
