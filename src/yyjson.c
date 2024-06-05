@@ -6061,10 +6061,10 @@ copy_utf8_inner_ucs2:
         })
 
         /* modified BEGIN */
-        // if (unlikely(pos == src)) {
-        //     if (!inv) return_err(src, "invalid UTF-8 encoding in string");
-        //     goto copy_ascii_stop_1;
-        // }
+        if (unlikely(pos == src)) {
+            return_err(src, "invalid UTF-8 encoding in string");
+            // goto copy_ascii_stop_1;
+        }
         goto copy_ascii_ucs2;
         /* modified END */
     }
@@ -6245,10 +6245,10 @@ copy_utf8_inner_ucs4:
         })
 
         /* modified BEGIN */
-        // if (unlikely(pos == src)) {
-        //     if (!inv) return_err(src, "invalid UTF-8 encoding in string");
-        //     goto copy_ascii_stop_1;
-        // }
+        if (unlikely(pos == src)) {
+            return_err(src, "invalid UTF-8 encoding in string");
+            // goto copy_ascii_stop_1;
+        }
         goto copy_ascii_ucs4;
         /* modified END */
     }
