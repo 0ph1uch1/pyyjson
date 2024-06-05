@@ -11,6 +11,7 @@ PyObject *pyyjson_FileEncode(PyObject *self, PyObject *args, PyObject *kwargs);
 PyObject *pyyjson_DecodeFile(PyObject *self, PyObject *args, PyObject *kwargs);
 
 PyObject *JSONDecodeError = NULL;
+PyObject *JSONEncodeError = NULL;
 
 static PyMethodDef pyyjson_Methods[] = {
     // {"encode", (PyCFunction)pyyjson_Encode, METH_VARARGS | METH_KEYWORDS, "Converts arbitrary object recursively into JSON. "},
@@ -93,6 +94,15 @@ PyMODINIT_FUNC PyInit_pyyjson(void)
     {
         Py_XDECREF(JSONDecodeError);
         Py_CLEAR(JSONDecodeError);
+        Py_DECREF(module);
+        return NULL;
+    }
+
+    JSONEncodeError = PyErr_NewException("pyyjson.JSONEncodeError", PyExc_ValueError, NULL);
+    Py_XINCREF(JSONEncodeError);
+    if (PyModule_AddObject(module, "JSONEncodeError", JSONEncodeError) < 0) {
+        Py_XDECREF(JSONEncodeError);
+        Py_CLEAR(JSONEncodeError);
         Py_DECREF(module);
         return NULL;
     }
