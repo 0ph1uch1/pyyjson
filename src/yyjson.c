@@ -6322,7 +6322,6 @@ static_noinline PyObject *read_root_single(u8 *temp_buf,
             err->code = YYJSON_READ_ERROR_##_code; \
             err->msg = _msg; \
         } \
-        PyErr_SetString(JSONDecodeError, err->msg); \
     } \
     return NULL; \
 } while (false)
