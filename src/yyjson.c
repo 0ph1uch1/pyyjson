@@ -4442,7 +4442,9 @@ static_inline bool read_number(u8 **ptr,
 } while (false)
     
 #define return_f64_bin(_v) do { \
-    *val = PyFloat_FromDouble(((u64)sign << 63) | (u64)(_v)); \
+    u64 ret = (((u64)sign << 63) | (u64)(_v)); \
+    double *d = (double *)&ret; \
+    *val = PyFloat_FromDouble(*d); \
     *end = cur; return true; \
 } while (false)
     
