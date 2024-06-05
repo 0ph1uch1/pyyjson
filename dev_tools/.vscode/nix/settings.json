@@ -1,0 +1,11 @@
+{
+   "terminal.integrated.defaultProfile.linux": "nix-shell",
+   "files.associations": {
+      "\"*.glsl\"": "\"C\"",
+      "*.glsl": "glsl",
+      "*.rgen": "glsl",
+      "*.rahit": "glsl",
+      "pyutils.h": "c",
+      "stdbool.h": "c"
+   }
+}
