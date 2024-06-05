@@ -4431,7 +4431,8 @@ static_inline bool read_number(u8 **ptr,
 } while (false)
 
 #define return_i64(_v) do { \
-    *val = PyFloat_FromDouble((u64)(sign ? (u64)(~(_v) + 1) : (u64)(_v))); \
+    i64 ret_i64 = (i64)((u64)(sign ? (u64)(~(_v) + 1) : (u64)(_v))); \
+    *val = PyLong_FromLongLong(ret_i64); \
     *end = cur; return true; \
 } while (false)
     
