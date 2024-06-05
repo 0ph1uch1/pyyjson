@@ -11,6 +11,7 @@ PyObject *pyyjson_FileEncode(PyObject *self, PyObject *args, PyObject *kwargs);
 PyObject *pyyjson_DecodeFile(PyObject *self, PyObject *args, PyObject *kwargs);
 
 PyObject *JSONDecodeError = NULL;
+PyObject *JSONEncodeError = NULL;
 
 static PyMethodDef pyyjson_Methods[] = {
         // {"encode", (PyCFunction)pyyjson_Encode, METH_VARARGS | METH_KEYWORDS, "Converts arbitrary object recursively into JSON. "},
@@ -81,6 +82,15 @@ PyMODINIT_FUNC PyInit_pyyjson(void) {
         return NULL;
     }
 
+    JSONEncodeError = PyErr_NewException("pyyjson.JSONEncodeError", PyExc_ValueError, NULL);
+    Py_XINCREF(JSONEncodeError);
+    if (PyModule_AddObject(module, "JSONEncodeError", JSONEncodeError) < 0) {
+        Py_XDECREF(JSONEncodeError);
+        Py_CLEAR(JSONEncodeError);
+        Py_DECREF(module);
+        return NULL;
+    }
+
     return module;
 }
 
@@ -93,11 +103,12 @@ PyObject *pyyjson_Decode(PyObject *self, PyObject *args, PyObject *kwargs) {
         return NULL;
     }
     yyjson_read_err err;
+
     PyObject *root = yyjson_read_opts((char *) string, len, NULL, &err);
     if (yyjson_unlikely(PyErr_Occurred())) {
         return NULL;
     } else if (yyjson_unlikely(err.code)) {
-        PyErr_Format(PyExc_ValueError, "%s\n\tat %zu", err.msg, err.pos);
+        PyErr_Format(JSONDecodeError, "%s\n\tat %zu", err.msg, err.pos);
         return NULL;
     }
     assert(root);
