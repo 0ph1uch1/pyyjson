@@ -85,7 +85,7 @@ add_library(pyyjson SHARED src/yyjson.h src/yyjson.c src/pyinit.c
         src/pyutils.h)
 target_include_directories(pyyjson PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/src> ${Python3_INCLUDE_DIRS})
 # set_target_properties(pyyjson PROPERTIES VERSION ${PROJECT_VERSION} SOVERSION ${PYYJSON_SOVERSION})
-target_link_libraries(pyyjson ${Python3_LIBRARIES})
+target_link_libraries(pyyjson PUBLIC ${Python3_LIBRARIES})
 set_target_properties(pyyjson PROPERTIES PREFIX "")
 
 
@@ -489,25 +489,25 @@ install(TARGETS pyyjson LIBRARY DESTINATION .)
 
 # ------------------------------------------------------------------------------
 # Fuzzing
-# if (YYJSON_BUILD_FUZZER)
-#     if(CMAKE_C_COMPILER_ID STREQUAL "Clang")
-#         enable_testing()
-#         file(COPY "${CMAKE_CURRENT_SOURCE_DIR}/fuzz/fuzzer.dict" DESTINATION "${CMAKE_CURRENT_BINARY_DIR}")
-#         file(GLOB YYJSON_FILES "${CMAKE_CURRENT_SOURCE_DIR}/test/data/json/**/*.json")
-#         file(COPY ${YYJSON_FILES} DESTINATION "${CMAKE_CURRENT_BINARY_DIR}/corpus")
+ if (YYJSON_BUILD_FUZZER)
+     if(CMAKE_C_COMPILER_ID STREQUAL "Clang")
+         enable_testing()
+         file(COPY "${CMAKE_CURRENT_SOURCE_DIR}/fuzz/fuzzer.dict" DESTINATION "${CMAKE_CURRENT_BINARY_DIR}")
+         file(GLOB YYJSON_FILES "${CMAKE_CURRENT_SOURCE_DIR}/test/data/json/**/*.json")
+         file(COPY ${YYJSON_FILES} DESTINATION "${CMAKE_CURRENT_BINARY_DIR}/corpus")
         
-#         set(COMPILE_FLAGS -fsanitize=fuzzer,address -O1 -g)
-#         target_compile_options(yyjson PRIVATE ${COMPILE_FLAGS})
-#         target_link_libraries(yyjson INTERFACE ${COMPILE_FLAGS})
+         set(COMPILE_FLAGS -fsanitize=fuzzer,address -O0 -g)
+         target_compile_options(pyyjson PRIVATE ${COMPILE_FLAGS})
+         target_link_libraries(pyyjson INTERFACE ${COMPILE_FLAGS})
 
-#         add_executable(fuzzer "fuzz/fuzzer.c")
-#         target_link_libraries(fuzzer yyjson)
-#         add_test(test_fuzzer ${CMAKE_CURRENT_BINARY_DIR}/fuzzer -dict=fuzzer.dict -max_total_time=300 ${CMAKE_CURRENT_BINARY_DIR}/corpus)
-#         set_tests_properties(test_fuzzer PROPERTIES TIMEOUT 600)
-#     else()
-#         message(WARNING "LibFuzzer requires LLVM Clang as compiler")
-#     endif()
-# endif()
+         add_executable(fuzzer "fuzz/fuzzer.c")
+         target_link_libraries(fuzzer pyyjson)
+         add_test(test_fuzzer ${CMAKE_CURRENT_BINARY_DIR}/fuzzer -dict=fuzzer.dict -max_total_time=300 ${CMAKE_CURRENT_BINARY_DIR}/corpus)
+         set_tests_properties(test_fuzzer PROPERTIES TIMEOUT 600)
+     else()
+         message(WARNING "LibFuzzer requires LLVM Clang as compiler")
+     endif()
+ endif()
 
 
 
