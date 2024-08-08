@@ -5269,7 +5269,7 @@ static_inline u32 read_b4_unicode(u32 uni) {
  @param msg The error message pointer.
  @return Whether success.
  */
-static_inline PyObject* read_string(const char **ptr, pyyjson_op **op, char **buffer) {
+static_inline int read_string(const char **ptr, pyyjson_op **op, char **buffer) {
     /*
      Each unicode code point is encoded as 1 to 4 bytes in UTF-8 encoding,
      we use 4-byte mask and pattern value to validate UTF-8 byte sequence,
